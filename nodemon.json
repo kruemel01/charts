@@ -1,0 +1,3 @@
+{
+  "ignore": ["js_src/*", "static/*"]
+}
