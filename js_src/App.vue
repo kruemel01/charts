@@ -1,6 +1,17 @@
 <style>
+  * {
+    box-sizing:  border-box;
+  }
   body {
-    font-family: Arial, sans-serif;
+    font-family: Lato, sans-serif;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+  }
+  #app {
+    display: flex;
+    flex-direction: row;
   }
 </style>
 

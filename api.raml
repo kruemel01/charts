@@ -1,0 +1,104 @@
+#%RAML 1.0
+title: chartscraper
+version: v1
+baseUri: /api/v1
+mediaType: application/json
+types:
+  Album:
+    type: object
+    properties:
+      name: string
+      interpret: string
+  Single:
+    type: object
+    properties:
+      name: string
+      interpret: string
+  ChartPosition:
+    type: object
+    properties:
+      time: date-only
+      position: integer
+  AlbumList:
+    type: Album[]
+    minItems: 1
+  SingleList:
+    type: Single[]
+    minItems: 1
+  AlbumChart:
+    type: object
+    properties:
+      album: Album
+      positions: ChartPosition[]
+  SingleChart:
+    type: object
+    properties:
+      album: Single
+      positions: ChartPosition[]
+  Charts:
+    type: AlbumChart[] | SingleChart[]
+    uniqueItems: true
+    minItems: 1
+  Timespan:
+    type: date-only[]
+    uniqueItems: true
+    minItems: 2
+    maxItems: 2
+  Error:
+    type: object
+    properties:
+      errno: integer
+      error: string
+/:
+  displayName: API Documentation
+  get:
+    description: |
+      Renders RAML API Documentation to HTML string and returns.
+      This is considered a temporary feature and will likely be removed
+      in future versions of the API.
+/songs:
+  displayName: Single charts entrypoint
+  description: |
+    API entrypoint for all requests concerning the top 100 single chart database.
+    Every operation is read-only, there are no write operations.
+  get:
+    description: |
+      Returns a list of every individual single in the database
+    responses:
+      200:
+        body:
+          application/json:
+            type: SingleList
+      500:
+        body:
+          application/json:
+            type: Error
+  /chartPositions:
+    post:
+      description: |
+        Returns the chart positions for the requested song/s in the optionally provided timespan.
+      body:
+        application/json:
+          properties:
+            songs:
+              type: Single | SingleList
+            timespan:
+              type: Timespan
+              required: false
+      responses:
+        200:
+          body:
+            application/json:
+              type: Charts
+        404:
+          body:
+            application/json:
+              type: Error
+        400:
+          body:
+            application/json:
+              type: Error
+        500:
+          body:
+            application/json:
+              type: Error
